@@ -4,12 +4,59 @@ import Image from "next/image"
 import { Container } from "@/components/container"
 import { Label } from "./components/label"
 import { GameCard } from "@/components/gameCard"
+import { Metadata } from "next"
+
+interface PropsParams {
+    params: {
+        id: string
+    }
+}
+
+export async function generateMetadata({ params }: PropsParams): Promise<Metadata> {
+    try {
+        const response: gameProps = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${params.id}`, {
+            next: {
+                revalidate: 120
+            }
+        })
+            .then((res) => res.json())
+            .catch(() => {
+                return {
+                    title: "Daly Games - Descubra jogos"
+                }
+            })
+            return{
+                title: response.title,
+                description: `${response.description.slice(0, 100)}...`,
+                openGraph: {
+                    title: response.title,
+                    images: [response.image_url]
+                },
+                robots:{
+                    index:true,
+                    follow:true,
+                    nocache:true,
+                    googleBot:{
+                        index:true,
+                        follow:true,
+                        noimageindex:true
+                    }
+                }
+            }
+    } catch (err) {
+        return {
+            title: "Daly Games - Descubra jogos"
+        }
+    }
+}
 
 async function getData(id: string) {
     try {
-        const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`, {next: {
-            revalidate: 120
-        }})
+        const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`, {
+            next: {
+                revalidate: 120
+            }
+        })
         return res.json()
     } catch (err) {
         throw new Error('Failed to fetch data')
@@ -18,7 +65,7 @@ async function getData(id: string) {
 
 async function getGameSorted() {
     try {
-        const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game_day`, {cache: "no-store"})
+        const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game_day`, { cache: "no-store" })
         return res.json()
     } catch (err) {
         throw new Error("Failed to fetch")
@@ -59,7 +106,7 @@ export default async function Game({
                 <h2 className="font-bold text-lg mt-7 mb-2">Jogo recomendado:</h2>
                 <div>
                     <div className="flex-grow">
-                        <GameCard data={sortedGame}/>
+                        <GameCard data={sortedGame} />
                     </div>
                 </div>
 
