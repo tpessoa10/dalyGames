@@ -8,7 +8,7 @@ import { Metadata } from "next"
 
 interface PropsParams {
     params: {
-        id: string
+        id: { id: string };
     }
 }
 
