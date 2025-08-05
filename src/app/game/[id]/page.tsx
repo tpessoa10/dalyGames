@@ -14,7 +14,8 @@ interface PropsParams {
 
 export async function generateMetadata({ params }: PropsParams): Promise<Metadata> {
     try {
-        const response: gameProps = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${params.id}`, {
+        const { id } = await params;
+        const response: gameProps = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`, {
             next: {
                 revalidate: 120
             }
@@ -72,16 +73,16 @@ async function getGameSorted() {
     }
 }
 
-export default async function Game({
-    params: { id }
-}: {
-    params: { id: string }
-}) {
-    const data: gameProps = await getData(id)
-    const sortedGame: gameProps = await getGameSorted()
+export default async function Game({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params; 
+
+    const data: gameProps = await getData(id);
+    const sortedGame: gameProps = await getGameSorted();
+
     if (!data) {
-        redirect("/")
+        redirect("/");
     }
+
     return (
         <main className="w-full text-black">
             <div className="bg-black h-80 sm:h-96 w-full relative">
@@ -109,8 +110,7 @@ export default async function Game({
                         <GameCard data={sortedGame} />
                     </div>
                 </div>
-
             </Container>
         </main>
-    )
+    );
 }
