@@ -15,11 +15,8 @@ async function getData(title: string) {
     }
 }
 
-export default async function Search({
-    params: { title }
-}: {
-    params: { title: string }
-}) {
+export default async function Search({params}: {params: { title: string }}) {
+    const title = decodeURIComponent(params.title)
     const games: gameProps[] = await getData(title)
     return (
         <main className="w-full text-black">
