@@ -8,13 +8,13 @@ import { Metadata } from "next"
 
 interface PropsParams {
     params: {
-        id: { id: string };
+        id: string;
     }
 }
 
 export async function generateMetadata({ params }: PropsParams): Promise<Metadata> {
     try {
-        const { id } = await params;
+        const { id } =  params;
         const response: gameProps = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`, {
             next: {
                 revalidate: 120
