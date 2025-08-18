@@ -13,7 +13,8 @@ async function getData(title: string): Promise<gameProps[] | null> {
     }
 }
 
-export default async function Search({params}: {params: { title: string }}) {
+export default async function Search(props: {params: Promise<{ title: string }>}) {
+    const params = await props.params;
     const title = decodeURIComponent(params.title)
     const games: gameProps[] | null = await getData(title)
     return (

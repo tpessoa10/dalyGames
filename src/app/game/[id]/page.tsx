@@ -10,12 +10,13 @@ import { Params } from "next/dist/server/request/params"
 
 
 interface GamePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({ params }: GamePageProps) {
+export async function generateMetadata(props: GamePageProps) {
+    const params = await props.params;
     try {
         const { id } = params; // Desestruture 'id' diretamente de 'params'
         const response: gameProps = await fetch(
@@ -72,7 +73,8 @@ async function getGameSorted() {
         throw new Error("Failed to fetch");
     }
 }
-export default async function Game({ params }:GamePageProps) {
+export default async function Game(props:GamePageProps) {
+    const params = await props.params;
     const { id } = params; // Desestruture 'id' diretamente de 'params'
 
     const data: gameProps = await getData(id);
