@@ -1,11 +1,9 @@
-import { gameProps } from "@/utils/types/game";
 import { Container } from "@/components/container";
 import { Input } from "@/components/input";
 import { GameCard } from "@/components/gameCard";
+import { gameProps } from "@/utils/types/game";
 
-
-
-async function getData(title: string) {
+async function getData(title: string): Promise<gameProps[] | null> {
     try {
         const decodeTitle = decodeURI(title)
         const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=game&title=${decodeTitle}`)
@@ -17,7 +15,7 @@ async function getData(title: string) {
 
 export default async function Search({params}: {params: { title: string }}) {
     const title = decodeURIComponent(params.title)
-    const games: gameProps[] = await getData(title)
+    const games: gameProps[] | null = await getData(title)
     return (
         <main className="w-full text-black">
             <Container>
